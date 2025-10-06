@@ -1,8 +1,6 @@
 package pl.pastuszka.league;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,9 +26,12 @@ public class LeagueApplication {
 
 
 		System.out.println("=== Zadanie 3 ===");
-		Set<Team> allTeams = leagues.stream()
+		List<Team> allTeams = leagues.stream()
 			.flatMap(league -> league.getTeams().stream())
-			.collect(Collectors.<Team>toSet());
+			.distinct()
+			.sorted()
+			.toList();
+			
 		
 		allTeams.forEach(System.out::println);
 
@@ -45,6 +46,7 @@ public class LeagueApplication {
 		System.err.println("=== Zadanie 5 ===");
 		List<TeamDTO> teamDTOs = leagues.stream()
 			.flatMap(league -> league.getTeams().stream())
+			.distinct()
 			.map(team -> TeamDTO.builder()
 				.name(team.getName())
 				.city(team.getCity())
