@@ -1,6 +1,8 @@
 package pl.pastuszka.league;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import pl.pastuszka.league.DTO.TeamDTO;
 import pl.pastuszka.league.data.LeagueGenerator;
 import pl.pastuszka.league.entity.League;
+import pl.pastuszka.league.entity.Team;
 
 @SpringBootApplication
 public class LeagueApplication {
@@ -17,6 +20,29 @@ public class LeagueApplication {
 		
 		List<League> leagues = LeagueGenerator.generateLeagues();
 
+		System.err.println("=== Zadanie 2 ===");
+		leagues.forEach(league -> {
+			System.out.println(league);
+			league.getTeams().forEach(team -> System.out.println("  " + team));
+		});
+
+
+		System.out.println("=== Zadanie 3 ===");
+		Set<Team> allTeams = leagues.stream()
+			.flatMap(league -> league.getTeams().stream())
+			.collect(Collectors.<Team>toSet());
+		
+		allTeams.forEach(System.out::println);
+
+
+		System.err.println("=== Zadanie 4 ===");
+		leagues.stream()
+			.flatMap(league -> league.getTeams().stream())
+			.filter(team -> team.getRating() > 50)
+			.sorted()
+			.forEach(System.out::println);
+
+		System.err.println("=== Zadanie 5 ===");
 		List<TeamDTO> teamDTOs = leagues.stream()
 			.flatMap(league -> league.getTeams().stream())
 			.map(team -> TeamDTO.builder()
@@ -28,10 +54,10 @@ public class LeagueApplication {
 			)
 			.sorted()
 			.toList();
-			
-		System.out.println("=== Drużyny DTO ===");
+
 		teamDTOs.forEach(System.out::println);
-		System.out.println("===================");
+
+
 	}
 
 }

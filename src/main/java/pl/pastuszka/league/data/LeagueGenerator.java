@@ -43,11 +43,33 @@ public class LeagueGenerator {
             .rating(90)
             .build();
 
+        Team t5 = Team.builder()
+            .name("Celtics")
+            .city("Boston")
+            .rating(92)
+            .build();
+
+        Team t6 = Team.builder()
+            .name("Arka")
+            .city("Gdynia")
+            .rating(50)
+            .build();
+
+        Team t7 = Team.builder()
+            .name("Czarni")
+            .city("Słupsk")
+            .rating(45)
+            .build();
+
+        pl.addTeam(t1);
         pl.addTeam(t1);
         usa.addTeam(t2);
         pl.addTeam(t3);
         usa.addTeam(t4);
-
+        usa.addTeam(t5);
+        pl.addTeam(t6);
+        pl.addTeam(t7);
+        usa.addTeam(t3);
         return Arrays.asList(pl, usa);
     }
 }
