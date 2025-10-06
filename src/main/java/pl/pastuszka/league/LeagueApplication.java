@@ -6,9 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import pl.pastuszka.league.DTO.TeamDTO;
-import pl.pastuszka.league.data.LeagueGenerator;
 import pl.pastuszka.league.entity.League;
 import pl.pastuszka.league.entity.Team;
+import pl.pastuszka.league.utils.SerializeLeague;
+import pl.pastuszka.league.data.LeagueGenerator;
 
 @SpringBootApplication
 public class LeagueApplication {
@@ -59,6 +60,9 @@ public class LeagueApplication {
 
 		teamDTOs.forEach(System.out::println);
 
+
+		System.err.println("=== Zadanie 6 ===");
+		leagues = SerializeLeague.task6(leagues, "leagues.json");
 
 	}
 
