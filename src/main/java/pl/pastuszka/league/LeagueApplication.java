@@ -1,6 +1,7 @@
 package pl.pastuszka.league;
 
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -64,6 +65,39 @@ public class LeagueApplication {
 		System.err.println("=== Zadanie 6 ===");
 		leagues = SerializeLeague.task6(leagues, "leagues.json");
 
+
+		System.out.println("=== Zadanie 7 ===");
+
+		ForkJoinPool customThreadPool = new ForkJoinPool(4);
+
+		final List<League> finalLeagues = leagues; 
+
+		try {
+			customThreadPool.submit(() ->{
+				finalLeagues.parallelStream().forEach(league -> {
+    				System.out.println("\n---" + Thread.currentThread().getName() + " Liga: " + league.getName() + " ---");
+
+    				league.getTeams().forEach(team -> {
+        				System.out.println("--- " + Thread.currentThread().getName() + " Druzyna: " + team.toString() + " ---");
+    				});
+
+    				//System.out.println("---" + Thread.currentThread().getName() + " Koniec ligi: " + league.getName() + " ---\n");
+				});
+			}).get();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Zamknięcie puli wątków
+			customThreadPool.shutdown();
+			try {
+				if (!customThreadPool.awaitTermination(60, java.util.concurrent.TimeUnit.SECONDS)) {
+					customThreadPool.shutdownNow();
+				}
+			} catch (InterruptedException e) {
+				customThreadPool.shutdownNow();
+			}
+		}
 	}
 
 }

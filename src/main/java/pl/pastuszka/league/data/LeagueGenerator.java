@@ -1,75 +1,52 @@
 package pl.pastuszka.league.data;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import pl.pastuszka.league.entity.League;
 import pl.pastuszka.league.entity.Team;
 
 public class LeagueGenerator {
+    private static final List<String> LEAGUE_NAMES = Arrays.asList("Orlen Basket Liga", "NBA", "EuroLeague", "Liga ACB");
+    private static final List<String> COUNTRIES = Arrays.asList("Polska", "USA", "Hiszpania", "Niemcy", "Wlochy");
+    private static final List<String> TEAM_NAMES = Arrays.asList("Legia", "Lakers", "Trefl", "Heat", "Celtics", "Arka", "Czarni", "Bayern", "Juventus", "Real", "Barcelona", "GTK", "Milan", "Inter", "Raptors", "Knicks", "Spurs", "Nets", "Bulls", "Warriors");
+    private static final List<String> CITIES = Arrays.asList("Warszawa", "Los Angeles", "Sopot", "Miami", "Boston", "Gdynia", "Słupsk", "Monachium", "Turyn", "Madryt", "Barcelona", "Wroclaw", "Mediolan", "Nowy Jork", "Toronto", "Chicago", "San Francisco");
+
+
     public static List<League> generateLeagues() {
-        League pl = League.builder()
-            .name("Orlen Basket Liga")
-            .country("Polska")
-            .build();
+        Random random = new Random();
+        List<League> leagues = new ArrayList<>();
 
-        League usa = League.builder()
-            .name("NBA")
-            .country("USA")
-            .build();
+        for (String leagueName : LEAGUE_NAMES) {
+            League league = League.builder()
+                .name(leagueName)
+                .country(COUNTRIES.get(random.nextInt(COUNTRIES.size())))
+                .build();
 
-        Team t1 = Team.builder()
-            .name("Legia")
-            .city("Warszawa")
-            .rating(60)
-            .build();
+            // Generowanie druzyn   
+            for (int i = 0; i < 20; i++) {
+                
+                String teamName = TEAM_NAMES.get(random.nextInt(TEAM_NAMES.size()));
+                String city = CITIES.get(random.nextInt(CITIES.size()));
+                int rating = random.nextInt(101); // Ocena od 0 do 100
 
-        Team t2 = Team.builder()
-            .name("Lakers")
-            .city("Los Angeles")
-            .rating(95)
-            .build();
+                Team team = Team.builder()
+                    .name(teamName)
+                    .city(city)
+                    .rating(rating)
+                    .build();
+                
+                team.setLeague(league);
+                league.addTeam(team);
+                
+            }
 
-        Team t3 = Team.builder()
-            .name("Trefl")
-            .city("Sopot")
-            .rating(55)
-            .build();
+            leagues.add(league);
+        }
 
-        Team t4 = Team.builder()
-            .name("Heat")
-            .city("Miami")
-            .rating(90)
-            .build();
-
-        Team t5 = Team.builder()
-            .name("Celtics")
-            .city("Boston")
-            .rating(92)
-            .build();
-
-        Team t6 = Team.builder()
-            .name("Arka")
-            .city("Gdynia")
-            .rating(50)
-            .build();
-
-        Team t7 = Team.builder()
-            .name("Czarni")
-            .city("Słupsk")
-            .rating(45)
-            .build();
-
-        pl.addTeam(t1);
-        pl.addTeam(t1);
-        usa.addTeam(t2);
-        pl.addTeam(t3);
-        usa.addTeam(t4);
-        usa.addTeam(t5);
-        pl.addTeam(t6);
-        pl.addTeam(t7);
-        usa.addTeam(t3);
-        return Arrays.asList(pl, usa);
+        return leagues;
     }
 }
