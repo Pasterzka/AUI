@@ -27,7 +27,7 @@ public class LeagueGenerator {
                 .build();
 
             // Generowanie druzyn   
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 5; i++) {
                 
                 String teamName = TEAM_NAMES.get(random.nextInt(TEAM_NAMES.size()));
                 String city = CITIES.get(random.nextInt(CITIES.size()));

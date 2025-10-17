@@ -2,21 +2,41 @@ package pl.pastuszka.league.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
+@Table(name="teams")
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class Team implements Serializable,Comparable<Team> {
-    
-   private static final long serialVersionUID = 1L;
-   private final String name;
-   private final String city;
-   private League league;
-   private int rating;
+
+    @Id
+    @Column(name="id",  unique = true, nullable = false)
+    private UUID id;
+
+    // Serializacja
+    private static final long serialVersionUID = 1L;
+
+    @Column(name = "city",  nullable = false)
+    private final String city;
+
+    @Column(name = "name", nullable = false)
+    private final String name;
+
+    @Column(name = "rating")
+    private int rating;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "league_id")
+    private League league;
+
+
 
 
     @Override

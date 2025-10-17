@@ -1,25 +1,39 @@
 package pl.pastuszka.league.entity;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-
-// Lombork
+@Entity
+@Table(name = "leagues")
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class League implements Serializable{
     
-    // Pola klasy
+    // ID - JPA
+    @Id
+    @Column(name="id", unique = true, nullable = false)
+    private UUID id;
+
+    // Serializacja danych -> Lab1 -> w sumie można usunąć
     private static final long serialVersionUID = 1L;
+
+    @Column(nullable = false)
     private final String name;
+
+    @Column(nullable = false)
     private final String country;
+
+    @OneToMany(mappedBy = "league", fetch = FetchType.LAZY,  cascade = CascadeType.REMOVE)
     private final List<Team> teams = new ArrayList<>();
 
     // Dodanie druzyny do ligi
