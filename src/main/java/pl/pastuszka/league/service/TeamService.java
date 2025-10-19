@@ -24,13 +24,12 @@ public class TeamService {
         return teamRepository.findByLeague(league);
     }
 
-    public Optional<League> findById(UUID id) {
+    public Optional<Team> findById(UUID id) {
         return teamRepository.findById(id);
     }
 
     public Team save(Team team) {
-        S save = teamRepository.save(team);
-        return save;
+        return teamRepository.save(team);
     }
 
     public void deleteById(UUID id) {
