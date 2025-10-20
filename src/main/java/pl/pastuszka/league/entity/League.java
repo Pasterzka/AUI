@@ -66,10 +66,6 @@ public class League implements Serializable{
 
     @Override
     public String toString() {
-        return "Liga [nazwa=" + name + ", kraj=" + country + ", liczba zespolow=" + teams.size()  + "]";
-    }
-
-    public String getName() {
-        return name;
+        return "Liga [ UUID=" + id + ", nazwa=" + name + ", kraj=" + country + "]";
     }
 }

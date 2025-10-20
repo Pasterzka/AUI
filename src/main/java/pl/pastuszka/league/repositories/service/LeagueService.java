@@ -1,6 +1,7 @@
-package pl.pastuszka.league.service;
+package pl.pastuszka.league.repositories.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.pastuszka.league.entity.League;
 import pl.pastuszka.league.repositories.LeagueRepository;
 
@@ -16,19 +17,30 @@ public class LeagueService {
         this.leagueRepository = leagueRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<League> findAll(){
         return leagueRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<League> findById(UUID id){
         return leagueRepository.findById(id);
     }
 
-    public League save(League league){
-        return leagueRepository.save(league);
+    public void save(League league){
+        leagueRepository.save(league);
     }
 
     public void deleteById(UUID id){
-        leagueRepository.deleteById(id);
+        if (leagueRepository.existsById(id)) {
+            leagueRepository.deleteById(id);
+        }else{
+            System.out.println("Błędne UUID!");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<League> getAllLeaguesWithTeams() {
+        return leagueRepository.findAllWithTeams();
     }
 }

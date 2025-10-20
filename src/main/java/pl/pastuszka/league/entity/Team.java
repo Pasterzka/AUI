@@ -66,7 +66,7 @@ public class Team implements Serializable,Comparable<Team> {
 
     @Override
     public String toString() {
-        return "Druzyna [nazwa=" + name + ", miasto=" + city + ", liga=" + (league != null ? league.getName() : "") + ", ocena=" + rating + "]";
+        return "Druzyna [ UUID=" + id + ", nazwa=" + name + ", miasto=" + city + ", liga=" + (league != null ? league.getName() : "") + ", ocena=" + rating + "]";
     }
 
     public void setLeague(League league) {

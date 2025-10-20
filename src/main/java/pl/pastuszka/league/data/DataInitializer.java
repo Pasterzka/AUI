@@ -4,10 +4,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import pl.pastuszka.league.entity.League;
 import pl.pastuszka.league.entity.Team;
-import pl.pastuszka.league.repositories.LeagueRepository;
-import pl.pastuszka.league.repositories.TeamRepository;
-import pl.pastuszka.league.service.LeagueService;
-import pl.pastuszka.league.service.TeamService;
+import pl.pastuszka.league.repositories.service.LeagueService;
+import pl.pastuszka.league.repositories.service.TeamService;
 
 import java.util.UUID;
 
