@@ -33,8 +33,8 @@ POST {{baseUrl}}/leagues/{{leagueId}}/teams
 Content-Type: application/json
 
 {
-  "name": "Manchester United",
-  "city": "Manchester",
+  "name": "Lakers",
+  "city": "Los Angeles",
   "rating": 85
 }
 
@@ -48,8 +48,8 @@ PUT {{baseUrl}}/leagues/{{leagueId}}/teams/{{teamId}}
 Content-Type: application/json
 
 {
-  "name": "Manchester United (Updated)",
-  "city": "Manchester",
+  "name": "Clippers",
+  "city": "Los Angeles",
   "rating": 99
 }
 
