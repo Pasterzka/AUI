@@ -24,10 +24,10 @@ public class Team implements Serializable,Comparable<Team> {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "city",  nullable = false)
-    private final String city;
+    private  String city;
 
     @Column(name = "name", nullable = false)
-    private final String name;
+    private  String name;
 
     @Column(name = "rating")
     private int rating;

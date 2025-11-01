@@ -1,6 +1,6 @@
 package pl.pastuszka.league.labs;
 
-import pl.pastuszka.league.DTO.TeamDTO;
+import pl.pastuszka.league.DTO.TeamDTO2;
 import pl.pastuszka.league.data.LeagueGenerator;
 import pl.pastuszka.league.entity.League;
 import pl.pastuszka.league.entity.Team;
@@ -40,10 +40,10 @@ public class Lab_1 {
                 .forEach(System.out::println);
 
         System.out.println("=== Zadanie 5 ===");
-        List<TeamDTO> teamDTOs = leagues.stream()
+        List<TeamDTO2> teamDTOs = leagues.stream()
                 .flatMap(league -> league.getTeams().stream())
                 .distinct()
-                .map(team -> TeamDTO.builder()
+                .map(team -> TeamDTO2.builder()
                         .name(team.getName())
                         .city(team.getCity())
                         .rating(team.getRating())
