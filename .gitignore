@@ -35,3 +35,4 @@ build/
 
 ### Files ###
 leagues.json
+.DS_Store
