@@ -108,4 +108,18 @@ public class TeamController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<TeamReadDTO>> getAllTeamsInternal() {
+        List<TeamReadDTO> teams = teamService.findAll() // Musisz dodać findAll w serwisie!
+                .stream()
+                .map(t -> new TeamReadDTO(
+                        t.getId(),
+                        t.getName(),
+                        t.getCity(),
+                        t.getRating(),
+                        t.getLeague() != null ? t.getLeague().getId() : null))
+                .toList();
+        return ResponseEntity.ok(teams);
+    }
 }

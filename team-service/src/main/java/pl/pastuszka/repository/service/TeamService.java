@@ -45,4 +45,8 @@ public class TeamService {
             System.out.println("Błędne UUID!");
         }
     }
+
+    public List<Team> findAll() {
+        return teamRepository.findAll();
+    }
 }

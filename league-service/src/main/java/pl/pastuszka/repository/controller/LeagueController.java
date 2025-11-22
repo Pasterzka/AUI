@@ -6,6 +6,7 @@ import pl.pastuszka.entity.League;
 import pl.pastuszka.repository.dto.LeagueCreateDTO;
 import pl.pastuszka.repository.dto.LeagueListDTO;
 import pl.pastuszka.repository.dto.LeagueReadDTO;
+import pl.pastuszka.repository.dto.LeagueTeamListDTO;
 import pl.pastuszka.repository.service.LeagueService;
 
 
@@ -74,5 +75,8 @@ public class LeagueController {
         return ResponseEntity.noContent().build();
     }
 
-    // USUNIĘTO: getAllLeaguesWithTeams
+    @GetMapping("/with-teams")
+    public List<LeagueTeamListDTO> getLeaguesWithTeams() {
+        return leagueService.getAllLeaguesWithTeams();
+    }
 }
