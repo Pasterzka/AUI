@@ -1,9 +1,9 @@
-package pl.pastuszka.league.repositories;
+package pl.pastuszka.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.pastuszka.league.entity.League;
+import pl.pastuszka.entity.League;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,5 +1,66 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### Ustawienia globalne
+@baseUrl = http://localhost:8080
 
-###
+// Zmienne do przechowywania ID utworzonych zasobów
+@leagueId =6a9a2c7e-1234-4abc-bbbb-2eaa3ad122ca
+@teamId =
+
+### 0. GET All Leagues (GET)
+// Oczekiwany kod: 200 OK.
+GET {{baseUrl}}/leagues
+
+### 1. CREATE League (POST)
+// Oczekiwany kod: 201 Created
+POST {{baseUrl}}/leagues
+Content-Type: application/json
+
+{
+  "name": "NBA",
+  "country": "USA"
+}
+
+### 2. GET All Leagues (GET)
+// Oczekiwany kod: 200 OK.
+GET {{baseUrl}}/leagues
+
+### 3. GET Single League (GET /{id})
+// Oczekiwany kod: 200 OK
+GET {{baseUrl}}/leagues/{{leagueId}}
+
+### 4. CREATE Team (POST)
+// Oczekiwany kod: 201 Created
+POST {{baseUrl}}/leagues/{{leagueId}}/teams
+Content-Type: application/json
+
+{
+  "name": "Lakers",
+  "city": "Los Angeles",
+  "rating": 85
+}
+
+### 5. GET All Teams in League (GET /teams)
+// Oczekiwany kod: 200 OK.
+GET {{baseUrl}}/leagues/{{leagueId}}/teams
+
+### 6. UPDATE Team (PUT /{teamId})
+// Oczekiwany kod: 204 No Content
+PUT {{baseUrl}}/leagues/{{leagueId}}/teams/{{teamId}}
+Content-Type: application/json
+
+{
+  "name": "Clippers",
+  "city": "Los Angeles",
+  "rating": 99
+}
+
+### 7. DELETE Team (DELETE /{teamId})
+// Usuwanie pojedynczej drużyny. Oczekiwany kod: 204 No Content.
+DELETE {{baseUrl}}/leagues/{{leagueId}}/teams/{{teamId}}
+
+### 8. DELETE League (DELETE /{leagueId})
+// Usuwanie ligi (kategorii) z kaskadowym usuwaniem elementów. Oczekiwany kod: 204 No Content.
+DELETE {{baseUrl}}/leagues/{{leagueId}}
+
+### 9. GET All Leagues with Teams (GET /with-teams)
+// Oczekiwany kod: 200 OK.
+GET {{baseUrl}}/leagues/with-teams

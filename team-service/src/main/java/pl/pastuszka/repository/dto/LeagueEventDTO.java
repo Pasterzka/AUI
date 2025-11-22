@@ -1,4 +1,6 @@
 package pl.pastuszka.repository.dto;
 
-public record LeagueEventDTO() {
+import java.util.UUID;
+
+public record LeagueEventDTO(UUID id, String name) {
 }

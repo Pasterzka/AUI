@@ -1,4 +1,4 @@
-package pl.pastuszka.league.DTO.League;
+package pl.pastuszka.repository.dto;
 
 import java.util.UUID;
 

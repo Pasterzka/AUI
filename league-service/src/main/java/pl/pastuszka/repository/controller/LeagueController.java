@@ -1,22 +1,17 @@
-package pl.pastuszka.league.controllers;
+package pl.pastuszka.repository.controller;
 
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.pastuszka.league.DTO.League.LeagueCreateDTO;
-import pl.pastuszka.league.DTO.League.LeagueListDTO;
-import pl.pastuszka.league.DTO.League.LeagueReadDTO;
-import pl.pastuszka.league.DTO.League.LeagueTeamListDTO;
-import pl.pastuszka.league.DTO.Team.TeamListDTO;
-import pl.pastuszka.league.entity.League;
-import pl.pastuszka.league.repositories.service.LeagueService;
+import pl.pastuszka.entity.League;
+import pl.pastuszka.repository.dto.LeagueCreateDTO;
+import pl.pastuszka.repository.dto.LeagueListDTO;
+import pl.pastuszka.repository.dto.LeagueReadDTO;
+import pl.pastuszka.repository.service.LeagueService;
+
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-
-import static java.util.Arrays.stream;
 
 @RestController
 @RequestMapping("/leagues")
@@ -50,8 +45,24 @@ public class LeagueController {
                 .name(leagueCreateDTO.name())
                 .country(leagueCreateDTO.country())
                 .build();
-        leagueService.save(league);
+        leagueService.save(league); // To wywoła synchronizację w serwisie
         return ResponseEntity.created(URI.create("/leagues/" + league.getId())).build();
+    }
+
+    // Metoda PUT (Aktualizacja lub tworzenie ze znanym ID)
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> createOrUpdateLeagueWithId(@PathVariable UUID id,
+                                                             @RequestBody LeagueCreateDTO dto) {
+        // Logika uproszczona - po prostu budujemy obiekt i zapisujemy
+        // Service sprawdzi czy to update czy save, ale w obu przypadkach wyśle sync do team-service
+        League league = League.builder()
+                .id(id)
+                .name(dto.name())
+                .country(dto.country())
+                .build();
+
+        leagueService.save(league);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
@@ -59,29 +70,9 @@ public class LeagueController {
         if (leagueService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        leagueService.deleteById(id);
+        leagueService.deleteById(id); // To wywoła synchronizację (delete)
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/with-teams")
-    public List<LeagueTeamListDTO> getAllLeaguesWithTeams() {
-        return leagueService.getAllLeaguesWithTeams()
-                .stream()
-                .map(league -> {
-                    // Mapowanie listy Team na listę TeamListDTO
-                    List<TeamListDTO> teamsDto = league.getTeams().stream()
-                            // Używamy zaktualizowanego TeamListDTO(id, name, rating)
-                            .map(t -> new TeamListDTO(t.getId(), t.getName(), t.getRating()))
-                            .toList();
-
-                    // Mapowanie League na LeagueWithTeamsDTO
-                    return new LeagueTeamListDTO(
-                            league.getId(),
-                            league.getName(),
-                            league.getCountry(),
-                            teamsDto
-                    );
-                })
-                .toList();
-    }
+    // USUNIĘTO: getAllLeaguesWithTeams
 }
