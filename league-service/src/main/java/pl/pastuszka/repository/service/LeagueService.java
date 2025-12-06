@@ -1,9 +1,7 @@
 package pl.pastuszka.repository.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate; // Import RestTemplate
-
+import org.springframework.web.client.RestTemplate;
 import pl.pastuszka.entity.League;
 import pl.pastuszka.repository.LeagueRepository;
 import pl.pastuszka.repository.dto.LeagueEventDTO;
@@ -17,86 +15,85 @@ import java.util.UUID;
 
 @Service
 public class LeagueService {
-    private final LeagueRepository leagueRepository;
-    private final RestTemplate restTemplate; // Do komunikacji
 
-    // Adres drugiego serwisu (team-service na porcie 8082)
-    private final String TEAM_SERVICE_URL = "http://localhost:8082/api/sync/leagues";
+    private final LeagueRepository leagueRepository;
+    private final RestTemplate restTemplate;
+
+    // Adresy do komunikacji z Team-Service (Port 8082)
+    // Używamy localhost, bo serwisy widzą się nawzajem
+    private final String TEAM_SERVICE_SYNC_URL = "http://localhost:8082/api/sync/leagues";
+    private final String TEAM_SERVICE_GET_ALL_URL = "http://localhost:8082/api/teams";
 
     public LeagueService(LeagueRepository leagueRepository, RestTemplate restTemplate) {
         this.leagueRepository = leagueRepository;
         this.restTemplate = restTemplate;
     }
 
-    @Transactional(readOnly = true)
-    public List<League> findAll(){
+    public List<League> findAll() {
         return leagueRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Optional<League> findById(UUID id){
+    public Optional<League> findById(UUID id) {
         return leagueRepository.findById(id);
     }
 
-    public void save(League league){
+    public void save(League league) {
         leagueRepository.save(league);
 
-        // POWIADOMIENIE team-service (PUT)
+        // SYNC: Powiadom team-service o nowej/zmienionej lidze
         try {
-            restTemplate.put(
-                    TEAM_SERVICE_URL + "/" + league.getId(),
-                    new LeagueEventDTO(league.getId(), league.getName())
-            );
+            restTemplate.put(TEAM_SERVICE_SYNC_URL + "/" + league.getId(),
+                    new LeagueEventDTO(league.getId(), league.getName()));
         } catch (Exception e) {
-            System.err.println("Nie udało się zsynchronizować z team-service: " + e.getMessage());
+            System.err.println("Błąd synchronizacji (PUT): " + e.getMessage());
         }
     }
 
-    public void deleteById(UUID id){
+    public void deleteById(UUID id) {
         if (leagueRepository.existsById(id)) {
             leagueRepository.deleteById(id);
 
-            // POWIADOMIENIE team-service (DELETE)
+            // SYNC: Powiadom team-service o usunięciu
             try {
-                restTemplate.delete(TEAM_SERVICE_URL + "/" + id);
+                restTemplate.delete(TEAM_SERVICE_SYNC_URL + "/" + id);
             } catch (Exception e) {
-                System.err.println("Nie udało się zsynchronizować z team-service (delete): " + e.getMessage());
+                System.err.println("Błąd synchronizacji (DELETE): " + e.getMessage());
             }
-        } else {
-            System.out.println("Błędne UUID!");
         }
     }
 
+
     public List<LeagueTeamListDTO> getAllLeaguesWithTeams() {
+        // Ligi z bazy H2 (League DB)
         List<League> leagues = leagueRepository.findAll();
 
-
-        // Pobieramy tablicę drużyn
+        // Drużyny z API (Team Service)
         SimpleTeamDTO[] teamsArray = {};
         try {
-
-            teamsArray = restTemplate.getForObject("http://localhost:8082/api/teams", SimpleTeamDTO[].class);
+            teamsArray = restTemplate.getForObject(TEAM_SERVICE_GET_ALL_URL, SimpleTeamDTO[].class);
         } catch (Exception e) {
-            System.err.println("Nie udało się pobrać drużyn: " + e.getMessage());
+            System.err.println("Nie udało się pobrać listy drużyn: " + e.getMessage());
         }
 
+        // Zabezpieczenie na wypadek null (gdy team-service leży)
         List<SimpleTeamDTO> allTeams = teamsArray != null ? List.of(teamsArray) : List.of();
 
-        return leagues.stream()
-                .map(league -> {
-                    // Filtrujemy drużyny, które należą do tej ligi
-                    List<TeamListDTO> leagueTeams = allTeams.stream()
-                            .filter(t -> t.leagueId() != null && t.leagueId().equals(league.getId()))
-                            .map(t -> new TeamListDTO(t.id(), t.name(), t.rating()))
-                            .toList();
+        // 3. Mapowanie i łączenie
+        return leagues.stream().map(league -> {
 
-                    return new LeagueTeamListDTO(
-                            league.getId(),
-                            league.getName(),
-                            league.getCountry(),
-                            leagueTeams
-                    );
-                })
-                .toList();
+            // Filtrujemy drużyny należące do tej konkretnej ligi
+            List<TeamListDTO> leagueTeams = allTeams.stream()
+                    .filter(t -> t.leagueId() != null && t.leagueId().equals(league.getId()))
+                    .map(t -> new TeamListDTO(t.id(), t.name(), t.city(), t.rating()))
+                    .toList();
+
+            // Tworzymy obiekt wynikowy
+            return new LeagueTeamListDTO(
+                    league.getId(),
+                    league.getName(),
+                    league.getCountry(),
+                    leagueTeams
+            );
+        }).toList();
     }
 }

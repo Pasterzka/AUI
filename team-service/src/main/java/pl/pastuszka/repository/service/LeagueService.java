@@ -21,12 +21,10 @@ public class LeagueService {
         return leagueRepository.findById(id);
     }
 
-    // Ta metoda będzie używana przez LeagueSyncController (PUT)
     public void save(League league){
         leagueRepository.save(league);
     }
 
-    // Ta metoda będzie używana przez LeagueSyncController (DELETE)
     public void deleteById(UUID id){
         if (leagueRepository.existsById(id)) {
             leagueRepository.deleteById(id);

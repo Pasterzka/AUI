@@ -8,5 +8,5 @@ public record LeagueTeamListDTO(
         UUID id,
         String name,
         String country,
-        List<TeamListDTO> teams // To jest kluczowe pole!
+        List<TeamListDTO> teams
 ) {}

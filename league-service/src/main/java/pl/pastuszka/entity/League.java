@@ -28,10 +28,10 @@ public class League implements Serializable{
     //private static final long serialVersionUID = 1L;
 
     @Column(nullable = false)
-    private final String name;
+    private String name;
 
     @Column(nullable = false)
-    private final String country;
+    private String country;
 
     //@OneToMany(mappedBy = "league", fetch = FetchType.LAZY,  cascade = CascadeType.REMOVE)
     //private final List<Team> teams = new ArrayList<>();

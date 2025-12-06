@@ -33,7 +33,7 @@ public class TeamController {
                 .map(league -> {
                     List<TeamListDTO> teams = teamService.findByLeagueId(leagueId)
                             .stream()
-                            .map(t -> new TeamListDTO(t.getId(), t.getName(), t.getRating()))
+                            .map(t -> new TeamListDTO(t.getId(), t.getName(),t.getCity(), t.getRating()))
                             .toList();
                     return ResponseEntity.ok(teams);
                 })
@@ -42,20 +42,36 @@ public class TeamController {
 
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamReadDTO> getTeam(@PathVariable UUID leagueId, @PathVariable UUID teamId) {
-        return teamService.findById(teamId)
-                .filter(team -> team.getLeague().getId().equals(leagueId))
-                .map(team -> ResponseEntity.ok(new TeamReadDTO(
-                        team.getId(),
-                        team.getName(),
-                        team.getCity(),
-                        team.getRating(),
-                        leagueId)))
-                .orElse(ResponseEntity.notFound().build());
+
+        var teamOpt = teamService.findById(teamId);
+
+        if (teamOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var team = teamOpt.get();
+
+        if (team.getLeague() == null) {
+            return ResponseEntity.status(500).build();
+        }
+
+
+        if (!team.getLeague().getId().equals(leagueId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+
+        return ResponseEntity.ok(new TeamReadDTO(
+                team.getId(),
+                team.getName(),
+                team.getCity(),
+                team.getRating(),
+                leagueId
+        ));
     }
 
     @PostMapping
     public ResponseEntity<Object> addTeam(@PathVariable UUID leagueId, @RequestBody TeamCreateDTO dto) {
-        // Kluczowe: Możemy dodać drużynę TYLKO do ligi, która istnieje w naszej lokalnej kopii
         return leagueService.findById(leagueId)
                 .map(league -> {
                     Team team = Team.builder()
@@ -83,7 +99,7 @@ public class TeamController {
                     team.setCity(dto.city());
                     team.setRating(dto.rating());
 
-                    // Upewnienie się, że liga jest ustawiona (przydatne przy tworzeniu nowego)
+                    // Upewnienie się, że liga jest ustawiona
                     if (team.getLeague() == null) {
                         team.setLeague(league);
                     }
@@ -111,7 +127,7 @@ public class TeamController {
 
     @GetMapping("/all")
     public ResponseEntity<List<TeamReadDTO>> getAllTeamsInternal() {
-        List<TeamReadDTO> teams = teamService.findAll() // Musisz dodać findAll w serwisie!
+        List<TeamReadDTO> teams = teamService.findAll()
                 .stream()
                 .map(t -> new TeamReadDTO(
                         t.getId(),

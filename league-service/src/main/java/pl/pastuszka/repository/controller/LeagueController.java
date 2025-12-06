@@ -28,7 +28,7 @@ public class LeagueController {
     public List<LeagueListDTO> getAllLeagues() {
         return leagueService.findAll()
                 .stream()
-                .map(l -> new LeagueListDTO(l.getId(), l.getName()))
+                .map(l -> new LeagueListDTO(l.getId(), l.getName(), l.getCountry()))
                 .toList();
     }
 
@@ -54,8 +54,7 @@ public class LeagueController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> createOrUpdateLeagueWithId(@PathVariable UUID id,
                                                              @RequestBody LeagueCreateDTO dto) {
-        // Logika uproszczona - po prostu budujemy obiekt i zapisujemy
-        // Service sprawdzi czy to update czy save, ale w obu przypadkach wyśle sync do team-service
+
         League league = League.builder()
                 .id(id)
                 .name(dto.name())
