@@ -1,0 +1,25 @@
+<div style="padding: 20px;">
+  <h2>Lista Lig</h2>
+  <button routerLink="/categories/new" style="margin-bottom: 20px;">+ Dodaj Ligę</button>
+
+  <ul style="list-style: none; padding: 0;">
+
+    <li *ngFor="let category of categories$ | async"
+        style="border: 1px solid #ccc; padding: 10px; margin-bottom: 5px; display: flex; justify-content: space-between;">
+
+      <span>{{ category.name }}</span>
+
+      <div>
+        <button [routerLink]="['/categories', category.id]" style="margin-right: 5px;">
+          Szczegóły
+        </button>
+
+        <button (click)="deleteCategory(category.id)" style="background: red; color: white;">
+          Usuń
+        </button>
+      </div>
+    </li>
+  </ul>
+
+  <p *ngIf="!(categories$ | async)">Ładowanie danych...</p>
+</div>

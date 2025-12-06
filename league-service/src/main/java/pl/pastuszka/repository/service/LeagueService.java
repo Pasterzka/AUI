@@ -68,23 +68,12 @@ public class LeagueService {
     }
 
     public List<LeagueTeamListDTO> getAllLeaguesWithTeams() {
-        // 1. Pobierz wszystkie ligi z lokalnej bazy
         List<League> leagues = leagueRepository.findAll();
 
-        // 2. Pobierz wszystkie drużyny z team-service przez REST
-        // Uwaga: endpoint w team-service to /leagues/all/teams lub inny, który ustawiłeś.
-        // Ale ponieważ w TeamControllerze mamy @RequestMapping("/leagues/{leagueId}/teams"),
-        // lepiej dodać osobny, niezależny kontroler w team-service lub użyć hacka w ścieżce.
-
-        // SUGERUJĘ: W team-service użyć osobnego kontrolera np. InternalController dla "/internal/teams"
-        // Ale dla uproszczenia załóżmy, że dodałeś w TeamController endpoint dostępny pod ścieżką.
 
         // Pobieramy tablicę drużyn
         SimpleTeamDTO[] teamsArray = {};
         try {
-            // Adres musi pasować do endpointu z Kroku 1.
-            // Uwaga: Jeśli TeamController ma @RequestMapping("/leagues/{leagueId}/teams"), to ciężko tam dodać globalny endpoint.
-            // LEPIEJ: Dodaj w TeamService osobny "GlobalTeamController" (patrz niżej instrukcja *).
 
             teamsArray = restTemplate.getForObject("http://localhost:8082/api/teams", SimpleTeamDTO[].class);
         } catch (Exception e) {
@@ -93,7 +82,6 @@ public class LeagueService {
 
         List<SimpleTeamDTO> allTeams = teamsArray != null ? List.of(teamsArray) : List.of();
 
-        // 3. Mapowanie w pamięci (Java Stream)
         return leagues.stream()
                 .map(league -> {
                     // Filtrujemy drużyny, które należą do tej ligi

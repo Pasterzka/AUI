@@ -1,0 +1,28 @@
+<div *ngIf="category" style="padding: 20px;">
+  <button routerLink="/categories">← Wróć do listy</button>
+
+  <h1>{{ category.name }}</h1>
+  <p>ID Ligi: {{ category.id }}</p>
+
+  <hr>
+
+  <h3>Drużyny</h3>
+
+  <button [routerLink]="['/categories', category.id, 'elements', 'new']"
+          style="margin-bottom: 15px; background: green; color: white; padding: 5px 10px;">
+    + Dodaj Drużynę
+  </button>
+
+  <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse;">
+    <tr *ngFor="let element of elements">
+      <td>
+        <a [routerLink]="['/categories', category.id, 'elements', element.id]"
+           style="color: blue; cursor: pointer; text-decoration: underline;">
+          {{ element.name }}
+        </a>
+      </td>
+      <td>{{ element.city }}</td>
+      <td>{{ element.rating }}</td>
+    </tr>
+  </table>
+</div>

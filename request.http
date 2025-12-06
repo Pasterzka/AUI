@@ -2,7 +2,7 @@
 @baseUrl = http://localhost:8080
 
 // Zmienne do przechowywania ID utworzonych zasobów
-@leagueId =6a9a2c7e-1234-4abc-bbbb-2eaa3ad122ca
+@leagueId = 6a9a2c7e-1234-4abc-bbbb-2eaa3ad122ca
 @teamId =
 
 ### 0. GET All Leagues (GET)

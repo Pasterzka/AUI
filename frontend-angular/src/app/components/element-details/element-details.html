@@ -1,0 +1,39 @@
+<div *ngIf="element; else loading" style="padding: 20px; max-width: 600px;">
+
+  <button [routerLink]="['/categories', leagueId]" style="margin-bottom: 20px; cursor: pointer;">
+    &larr; Wróć do listy drużyn
+  </button>
+
+  <div style="border: 1px solid #ccc; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+
+    <h1 style="margin-top: 0;">{{ element.name }}</h1>
+
+    <p><strong>Miasto:</strong> {{ element.city }}</p>
+    <p><strong>Rating:</strong> {{ element.rating }} / 100</p>
+
+    <p style="color: gray; font-size: 0.8em; margin-top: 20px;">
+      ID: {{ element.id }}
+    </p>
+
+    <hr>
+
+    <div style="display: flex; gap: 10px; margin-top: 20px;">
+
+      <button [routerLink]="['/categories', leagueId, 'elements', element.id, 'edit']"
+              style="padding: 10px 20px; background-color: orange; color: white; border: none; cursor: pointer; border-radius: 4px;">
+        Edytuj
+      </button>
+
+      <button (click)="deleteThisElement()"
+              style="padding: 10px 20px; background-color: red; color: white; border: none; cursor: pointer; border-radius: 4px;">
+        Usuń
+      </button>
+
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loading>
+  <div style="padding: 20px;">Ładowanie danych drużyny...</div>
+</ng-template>

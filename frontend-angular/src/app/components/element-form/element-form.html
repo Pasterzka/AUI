@@ -1,0 +1,27 @@
+<div style="padding: 20px;">
+  <h2>{{ elementId ? 'Edytuj' : 'Nowa' }} Drużyna</h2>
+
+  <form (ngSubmit)="onSubmit()" style="max-width: 400px;">
+
+    <div style="margin-bottom: 10px;">
+      <label>Nazwa:</label><br>
+      <input type="text" [(ngModel)]="element.name" name="name" required style="width: 100%; padding: 5px;">
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <label>Miasto:</label><br>
+      <input type="text" [(ngModel)]="element.city" name="city" required style="width: 100%; padding: 5px;">
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <label>Rating (0-100):</label><br>
+      <input type="number" [(ngModel)]="element.rating" name="rating" required style="width: 100%; padding: 5px;">
+    </div>
+
+    <div style="margin-top: 20px;">
+      <button type="submit" style="padding: 8px 16px; margin-right: 10px;">Zapisz</button>
+      <button type="button" (click)="goBack()" style="padding: 8px 16px;">Anuluj</button>
+    </div>
+
+  </form>
+</div>
