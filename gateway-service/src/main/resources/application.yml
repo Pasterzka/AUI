@@ -7,12 +7,15 @@ spring:
   cloud:
     gateway:
       routes:
+        # --- TEAM SERVICE MUSI BYĆ PIERWSZY (bo ma bardziej szczegółową ścieżkę) ---
         - id: team-service
-          uri: http://localhost:8082
+          # Pamiętaj, żeby tu było http://team-service:8082 (nazwa z dockera), a nie localhost
+          uri: ${TEAM_URI:http://team-service:8082}
           predicates:
-            - Path=/leagues/*/teams/**, /leagues/*/teams
+            - Path=/leagues/*/teams/**, /leagues/*/teams, /teams/**
 
+        # --- LEAGUE SERVICE DRUGI (Catch-all dla lig) ---
         - id: league-service
-          uri: http://localhost:8081
+          uri: ${LEAGUE_URI:http://league-service:8081}
           predicates:
             - Path=/leagues/**

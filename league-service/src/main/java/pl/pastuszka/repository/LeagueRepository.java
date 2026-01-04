@@ -1,12 +1,11 @@
 package pl.pastuszka.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import pl.pastuszka.entity.League;
-
-import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import pl.pastuszka.entity.League;
 
 @Repository
 public interface LeagueRepository extends JpaRepository<League, UUID> {

@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # --- Baza dla Lig (PostgreSQL) ---
+  league-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: leaguedb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    volumes:
+      - league_data:/var/lib/postgresql/data
+
+  # --- Baza dla Drużyn (PostgreSQL) ---
+  team-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: teamdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    volumes:
+      - team_data:/var/lib/postgresql/data
+
+  # --- League Service ---
+  league-service:
+    build: ./league-service
+    ports:
+      - "8081:8081"
+    environment:
+      # Nadpisujemy konfigurację Springa pod Dockera i PostgreSQL
+      #- DB_URL=jdbc:postgresql://league-db:5432/leaguedb
+      #- DB_USER=admin
+      #- DB_PASSWORD=password
+      #- DB_DRIVER=org.postgresql.Driver
+      #- DB_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      # URL do team-service wewnątrz sieci Dockera
+      #- TEAM_SERVICE_URL=http://team-service:8082/api/teams
+      # URL do synchronizacji
+      #- TEAM_SERVICE_SYNC_URL=http://team-service:8082/api/sync/leagues
+
+
+      - DB_URL=jdbc:postgresql://league-db:5432/leaguedb
+      - DB_USER=admin
+      - DB_PASSWORD=password
+      - DB_DRIVER=org.postgresql.Driver
+      - DB_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+
+      - TEAM_SERVICE_URL=http://team-service:8082
+    depends_on:
+      - league-db
+
+  # --- Team Service ---
+  team-service:
+    build: ./team-service
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_URL=jdbc:postgresql://team-db:5432/teamdb
+      - DB_USER=admin
+      - DB_PASSWORD=password
+      - DB_DRIVER=org.postgresql.Driver
+      - DB_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+    depends_on:
+      - team-db
+
+  # --- Gateway ---
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      # Gateway musi wiedzieć, gdzie szukać serwisów (po nazwach kontenerów)
+      - LEAGUE_URI=http://league-service:8081
+      - TEAM_URI=http://team-service:8082
+    depends_on:
+      - league-service
+      - team-service
+
+  # --- Frontend ---
+  frontend:
+    build: ./frontend-angular  # ścieżka do folderu z angularem
+    ports:
+      - "4200:80"
+    depends_on:
+      - gateway-service
+
+volumes:
+  league_data:
+  team_data:
